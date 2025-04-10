@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: consumers-data
+  datasource:
+    url: jdbc:postgresql://my-postgres:5432/test
+    # url: jdbc:postgresql://localhost:5432/test
+    username: postgres
+    password: p@ssw0rd
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+  kafka:
+    bootstrap-servers: my-kafka:9093
+    # bootstrap-servers: http://localhost:9092
+    consumer:
+      group-id: my-consumer-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+    listener:
+      ack-mode: manual

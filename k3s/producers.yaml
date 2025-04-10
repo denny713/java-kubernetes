@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: producers-service
+  namespace: my-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: producers-service
+  template:
+    metadata:
+      labels:
+        app: producers-service
+    spec:
+      containers:
+        - name: producers-service
+          image: denny713/producers-service:latest
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:postgresql://postgres:5432/test"
+            - name: SPRING_DATASOURCE_USERNAME
+              value: "postgres"
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: "p@ssw0rd"
+            - name: KAFKA_BROKER
+              value: "kafka:9092"
+          ports:
+            - containerPort: 8080
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: producers-service
+  namespace: my-app
+spec:
+  ports:
+    - port: 8080
+  selector:
+    app: producers-service

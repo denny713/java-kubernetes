@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: consumers-service
+  namespace: my-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: consumers-service
+  template:
+    metadata:
+      labels:
+        app: consumers-service
+    spec:
+      containers:
+        - name: consumers-service
+          image: your-docker-repo/consumers-service:latest
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:postgresql://postgres:5432/test"
+            - name: SPRING_DATASOURCE_USERNAME
+              value: "postgres"
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: "p@ssw0rd"
+            - name: KAFKA_BROKER
+              value: "kafka:9092"
+          ports:
+            - containerPort: 8081
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: consumers-service
+  namespace: my-app
+spec:
+  ports:
+    - port: 8081
+  selector:
+    app: consumers-service
